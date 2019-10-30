@@ -2,37 +2,48 @@ import React, {Component} from 'react';
 import {Platform} from 'react-native';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
-import {View} from 'react-native';
-
 export default class Search extends Component {
+  state = {
+    searchFocused: false,
+  };
+
   render() {
+    const {searchFocused} = this.state;
+    const {onLocationSelected} = this.props;
+
     return (
       <GooglePlacesAutocomplete
         placeholder="Para onde voce quer ir?"
         placeholderTextColor="#333"
-        onPress={(data, details) => {
-          console.log(data);
-        }}
+        onPress={onLocationSelected}
         query={{
           key: 'AIzaSyBKY8BY2WMyfv8hRgTz1T5m-25g0y0JEY0',
           language: 'pt',
         }}
         textInputProps={{
+          onFocus: () => {
+            this.setState({searchFocused: true});
+          },
+          onBlur: () => {
+            this.setState({searchFocused: false});
+          },
           autoCapitalize: 'none',
           autoCorrect: false,
         }}
+        listViewDisplayed={searchFocused}
         fetchDetails
-        enablePoweredByContainer="false"
+        enablePoweredByContainer={false}
         styles={{
           container: {
             position: 'absolute',
-            top: Platform.select({ios: 60, android: 10}),
+            top: Platform.select({ios: 60, android: 40}),
             width: '100%',
           },
           textInputContainer: {
             flex: 1,
             backgroundColor: 'transparent',
             height: 54,
+            marginHorizontal: 20,
             borderTopWidth: 0,
             borderBottomWidth: 0,
           },
@@ -45,7 +56,6 @@ export default class Search extends Component {
             paddingLeft: 20,
             paddingRight: 20,
             marginTop: 0,
-            marginBottom: 0,
             marginLeft: 0,
             marginRight: 0,
             elevation: 5,
@@ -71,10 +81,11 @@ export default class Search extends Component {
           },
           description: {
             fontSize: 16,
-            padding: 0,
+          },
+          row: {
+            padding: 20,
             height: 58,
           },
-          row: {},
         }}
       />
     );
